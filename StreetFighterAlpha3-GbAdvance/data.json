@@ -1,0 +1,24 @@
+{
+  "info": {
+    "combo": {
+      "address": 33557152,
+      "type": "<>u4"
+    },
+    "enemy health": {
+      "address": 33571880,
+      "type": "<u2"
+    },
+    "player health": {
+      "address": 33556504,
+      "type": "<u2"
+    },
+    "throwing": {
+      "address": 33556525,
+      "type": "><u4"
+    },
+    "total damage": {
+      "address": 33572536,
+      "type": "><u4"
+    }
+  }
+}
