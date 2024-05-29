@@ -1,7 +1,7 @@
 import retro
 import os
 from gymnasium.wrappers import TimeLimit, GrayScaleObservation, ResizeObservation, FrameStack
-from wrappers import FilterActionWrapper
+from wrappers import FilterAction
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 INTEGRATIONS_DIR = os.path.join(os.path.dirname(SCRIPT_DIR), 'custom_integrations')
@@ -14,6 +14,5 @@ game_scenario = 'scenario.training.time', time_limit = 600):
         env.render_mode = 'human' if render else None
         env = TimeLimit(env, time_limit)
 
-        button_to_exclude = 'SELECT'
-        env = FilterActionWrapper(env, button_to_exclude)
+        env = FilterAction(env, ['SELECT'])
         return env
