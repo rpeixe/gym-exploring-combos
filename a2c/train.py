@@ -1,6 +1,6 @@
 from stable_baselines3 import A2C
 from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3.common.vec_env import SubprocVecEnv
+from stable_baselines3.common.vec_env import SubprocVecEnv, VecFrameStack
 from env import make_env
 import argparse
 import os
@@ -12,23 +12,24 @@ def main(args):
            n_envs=args.n_envs,
            env_kwargs={"render": args.render},
            vec_env_cls=SubprocVecEnv)
+      vec_env = VecFrameStack(vec_env, 4)
       
       # Create the A2C model with TensorBoard logging enabled
       model = A2C(
          'CnnPolicy',
          vec_env,
-         learning_rate=0.0007, 
-         n_steps=5, 
-         gamma=0.99, 
-         ent_coef=0.01, 
-         vf_coef=0.5, 
-         max_grad_norm=0.5, 
+         learning_rate=0.0007,
+         n_steps=5,
+         gamma=0.99,
+         ent_coef=0.01,
+         vf_coef=0.5,
+         max_grad_norm=0.5,
          verbose=args.verbose
          )
 
       # Train and save the model
       time_steps = args.timesteps/args.qnt_saves
-      print(time_steps) 
+      print(time_steps)
       for i in range(args.qnt_saves):
          model.learn(total_timesteps=time_steps)
          model_save_path = f"{args.model_save_path}/a2c_sf6a_{i*time_steps:.0f}"

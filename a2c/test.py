@@ -1,7 +1,7 @@
 import argparse
 from stable_baselines3 import A2C
 from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3.common.vec_env import SubprocVecEnv
+from stable_baselines3.common.vec_env import SubprocVecEnv, VecFrameStack
 from env import make_env
 
 def main(args):
@@ -10,6 +10,7 @@ def main(args):
             n_envs=1,
             env_kwargs={"render": True},
             vec_env_cls=SubprocVecEnv)
+        vec_env = VecFrameStack(vec_env, 4)
         vec_env.reset()
 
         # Loading model treined
