@@ -1,14 +1,17 @@
 from stable_baselines3 import A2C
 from stable_baselines3.common.env_util import make_vec_env
+from stable_baselines3.common.vec_env import SubprocVecEnv
 from env import make_env
 import argparse
 import os
 
 def main(args):
-      env = make_env(args.render)
-
       # Create a vectorized environment
-      vec_env = make_vec_env(lambda: env, n_envs=args.n_envs)
+      vec_env = make_vec_env(
+           make_env,
+           n_envs=args.n_envs,
+           env_kwargs={"render": args.render},
+           vec_env_cls=SubprocVecEnv)
       
       # Create the A2C model with TensorBoard logging enabled
       model = A2C(
@@ -41,12 +44,12 @@ if __name__ == "__main__":
       parser = argparse.ArgumentParser(description="Train an A2C model on a custom environment")
 
       # Optional arguments with defaults
-      parser.add_argument("--render", default='False', help="Choose to render the environment (True/False)")
+      parser.add_argument("-r", "--render", action='store_true', help="Choose to render the environment")
       parser.add_argument("--n_envs", type=int, default=1, help="Number of environments")
-      parser.add_argument("--verbose", type=int, default=1, help="Verbose mode (0: no output, 1: info)")
-      parser.add_argument("--timesteps", type=int, default=10000, help="Total timesteps of training")
+      parser.add_argument("-v", "--verbose", type=int, default=1, help="Verbose mode (0: no output, 1: info)")
+      parser.add_argument("-t", "--timesteps", type=int, default=10000, help="Total timesteps of training")
       parser.add_argument("--qnt_saves", type=int, default=5, help="Quantity of models will save")
-      parser.add_argument("--model_save_path", type=str, default="treined_models", help="Path to save the trained model")
+      parser.add_argument("--model_save_path", type=str, default="trained_models", help="Path to save the trained model")
       
       args = parser.parse_args()
       main(args)

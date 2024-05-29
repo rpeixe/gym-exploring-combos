@@ -1,10 +1,15 @@
 import argparse
 from stable_baselines3 import A2C
 from stable_baselines3.common.env_util import make_vec_env
+from stable_baselines3.common.vec_env import SubprocVecEnv
 from env import make_env
 
 def main(args):
-        vec_env = make_vec_env(make_env)
+        vec_env = make_vec_env(
+            make_env,
+            n_envs=1,
+            env_kwargs={"render": True},
+            vec_env_cls=SubprocVecEnv)
         vec_env.reset()
 
         # Loading model treined
@@ -53,7 +58,7 @@ if __name__ == "__main__":
         parser = argparse.ArgumentParser(description="Run test from A2C model")
 
         parser.add_argument("--num_episodes", type=int, default=100, help="Number of episodes to test")
-        parser.add_argument("--model_load_path", type=str, default="treined_models/a2c_sf6a_final", help="Path to load the trained model")
+        parser.add_argument("--model_load_path", type=str, default="trained_models/a2c_sf6a_final", help="Path to load the trained model")
         
         args = parser.parse_args()
         main(args)
