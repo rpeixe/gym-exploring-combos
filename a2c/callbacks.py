@@ -34,4 +34,4 @@ class TensorboardCallbackTest(BaseCallback):
       def log_final_metrics(self, avg_reward, std_reward, best_reward):
          self.writer.add_text('Avg Reward', f"{avg_reward:.2f}", 0)
          self.writer.add_text('Std Reward', f"{std_reward:.2f}", 0)
-         self.writer.add_text('Best Reward', f"{std_reward:.2f}", 0)
+         self.writer.add_text('Best Reward', f"{best_reward:.2f}", 0)
