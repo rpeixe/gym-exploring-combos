@@ -2,7 +2,7 @@ import argparse
 import os
 from stable_baselines3 import A2C
 from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3.common.vec_env import SubprocVecEnv, VecFrameStack
+from stable_baselines3.common.vec_env import SubprocVecEnv, VecFrameStack, VecTransposeImage
 from stable_baselines3.common.callbacks import CallbackList, CheckpointCallback, EvalCallback
 from env import make_env
 from callbacks import TensorboardCallbackTrain
@@ -15,6 +15,7 @@ def main(args):
          env_kwargs={"render": args.render},
          vec_env_cls=SubprocVecEnv)
       vec_env = VecFrameStack(vec_env, 4)
+      vec_env = VecTransposeImage(vec_env)
       
       # Dir to TensorBoard visualisation
       for i in range(10):
@@ -28,11 +29,12 @@ def main(args):
          'CnnPolicy',
          vec_env,
          learning_rate=0.0007,
-         n_steps=5,
+         n_steps=500,
          gamma=0.99,
          ent_coef=0.01,
          vf_coef=0.5,
          max_grad_norm=0.5,
+         seed=args.seed,
          verbose=args.verbose,
          tensorboard_log=log_dir
          )
@@ -72,6 +74,7 @@ if __name__ == "__main__":
       parser.add_argument("-v", "--verbose", type=int, default=1, help="Verbose mode (0: no output, 1: info)")
       parser.add_argument("-t", "--timesteps", type=int, default=10000, help="Total timesteps of training")
       parser.add_argument("--saves", type=int, default=5, help="Quantity of models will save")
+      parser.add_argument("--seed", type=int, default=0, help="Define the random seed the model will use")
       
       args = parser.parse_args()
       main(args)

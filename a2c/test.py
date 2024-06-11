@@ -2,7 +2,7 @@ import argparse
 import os
 from stable_baselines3 import A2C
 from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3.common.vec_env import SubprocVecEnv, VecFrameStack
+from stable_baselines3.common.vec_env import SubprocVecEnv, VecFrameStack, VecTransposeImage
 from torch.utils.tensorboard import SummaryWriter
 from env import make_env
 from callbacks import TensorboardCallbackTest
@@ -14,7 +14,7 @@ def main(args):
         env_kwargs={"render": True},
         vec_env_cls=SubprocVecEnv)
     vec_env = VecFrameStack(vec_env, 4)
-    vec_env.reset()
+    vec_env = VecTransposeImage(vec_env)
 
     # Loading trained model
     model = A2C.load(args.load_path, env=vec_env)
