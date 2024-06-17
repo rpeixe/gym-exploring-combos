@@ -1,27 +1,21 @@
 import argparse
 import os
 from stable_baselines3 import A2C
-from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3.common.vec_env import SubprocVecEnv, VecFrameStack, VecTransposeImage
 from torch.utils.tensorboard import SummaryWriter
-from env import make_env
+from env import make_custom_vec_env
 from callbacks import TensorboardCallbackTest
 
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
 def main(args):
-    vec_env = make_vec_env(
-        make_env,
-        n_envs=1,
-        env_kwargs={"render": True},
-        vec_env_cls=SubprocVecEnv)
-    vec_env = VecFrameStack(vec_env, 4)
-    vec_env = VecTransposeImage(vec_env)
+    vec_env = make_custom_vec_env(render=True, action_memory=args.no_action_memory)
 
     # Loading trained model
     model = A2C.load(args.load_path, env=vec_env)
 
     # Callback for TensorBoard visualisation
     for i in range(10):
-        log_dir = os.path.join("logs/test", f"test{i+1}")
+        log_dir = os.path.join(SCRIPT_DIR, f"logs/test/test{i+1}")
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
             break
@@ -75,9 +69,10 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run test from A2C model")
 
+    parser.add_argument("-no_am", "--no_action_memory", action='store_false', help="Choose to not feed the last actions as input")
     parser.add_argument("-e", "--episodes", type=int, default=100, help="Total episodes of test")
     parser.add_argument("-d", "--deterministic", type=bool, default=False, help="Set predict deterministic of test")
-    parser.add_argument("--load_path", type=str, default="trained_models/best_model.zip", help="Path to load the trained model")
+    parser.add_argument("--load_path", type=str, default=os.path.join(SCRIPT_DIR, "trained_models/best_model.zip"), help="Path to load the trained model")
     
     args = parser.parse_args()
     main(args)
