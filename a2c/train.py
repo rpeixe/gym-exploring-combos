@@ -11,8 +11,8 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def main(trial, args):
     # Create a vectorized environment
-    vec_env = make_custom_vec_env(n_envs=1, render=False, action_memory=True)
-    eval_vec_env = make_custom_vec_env(n_envs=1, render=False, action_memory=True)
+    vec_env = make_custom_vec_env(n_envs=args.n_envs, render=args.render, action_memory=args.no_action_memory)
+    eval_vec_env = make_custom_vec_env(n_envs=1, render=args.render, action_memory=args.no_action_memory)
 
     policy_kwargs = {
         "optimizer_class": RMSpropTFLike,
@@ -21,17 +21,19 @@ def main(trial, args):
 
     # Hyperparameters to optimize or preselected, don't save when optimizing
     if args.n_optmization_trials > 0:
-        learning_rate = trial.suggest_float("learnig_rate", 1e-5, 1, log=True)
-        ent_coef = trial.suggest_float("ent_coef", 1e-8, 0.1, log=True)
-        vf_coef = trial.suggest_float('vf_coef', 1e-8, 0.1, log=True)
+        learning_rate = trial.suggest_float("learning_rate", 1e-5, 1, log=True)
+        ent_coef = trial.suggest_float("ent_coef", 1e-8, 1, log=True)
+        vf_coef = trial.suggest_float('vf_coef', 1e-8, 1, log=True)
         
         path_models = None
         path_results = None
         log_dir = None
     else:
-        learning_rate = 0.000219 
-        ent_coef = 1.262e-7
-        vf_coef = 0.000265
+        learning_rate = 0.0007 # 0.000219 # 0.0007
+        n_steps = 200
+        gamma = 0.99
+        ent_coef = 0.001 # 1.262e-7 # 0.01
+        vf_coef = 0.5 # 0.000265 # 0.25
 
         path_models=os.path.join(SCRIPT_DIR, "trained_models")
         path_results=os.path.join(SCRIPT_DIR, "trained_models/results")
@@ -47,6 +49,8 @@ def main(trial, args):
         'MultiInputPolicy',
         vec_env,
         learning_rate=learning_rate,
+        n_steps=n_steps,
+        gamma=gamma,
         ent_coef=ent_coef,
         vf_coef=vf_coef,
         policy_kwargs=policy_kwargs,
@@ -71,7 +75,7 @@ def main(trial, args):
     eval_callback = EvalCallback(
         eval_vec_env,
         n_eval_episodes=1,
-        eval_freq=500,
+        eval_freq=10000,
         log_path=path_results,
         best_model_save_path=path_models,
         deterministic=True,
@@ -103,7 +107,7 @@ if __name__ == "__main__":
     parser.add_argument("-t", "--timesteps", type=int, default=10000, help="Total timesteps of training")
     parser.add_argument("--saves", type=int, default=5, help="Quantity of models will save")
     parser.add_argument("--seed", type=int, default=0, help="Define the random seed the model will use")
-    parser.add_argument("-o", "--n_optmization_trials", type=int, default=100, help="Trials of hyperparameter optimization (0: preselect parms, 0>: optimize params)")
+    parser.add_argument("-o", "--n_optmization_trials", type=int, default=0, help="Trials of hyperparameter optimization (0: preselect parms, 0>: optimize params)")
 
     args = parser.parse_args()
 
