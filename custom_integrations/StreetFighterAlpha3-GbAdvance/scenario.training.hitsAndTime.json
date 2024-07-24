@@ -1,0 +1,25 @@
+{
+  "crop": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "done": {
+    "variables": {
+      "combo": {
+        "measurement": "delta",
+        "op": "negative"
+      },
+      "throwing": {
+        "op": "not-equal"
+      }
+    }
+  },
+  "reward": {
+    "script": "lua:hits_and_time"
+  },
+  "scripts": [
+    "script.lua"
+  ]
+}

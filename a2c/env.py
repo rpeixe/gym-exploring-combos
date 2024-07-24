@@ -11,7 +11,7 @@ INTEGRATIONS_DIR = os.path.join(os.path.dirname(SCRIPT_DIR), 'custom_integration
 def make_custom_env(
           render = True,
           action_memory = True,
-          game_state = 'Training.RyuVSKen.Wall',
+          game_state = 'Training.RyuVSKen.Wall.CustomCombo',
           game_scenario = 'scenario.training.time',
           time_limit = 600):
     
