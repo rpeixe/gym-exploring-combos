@@ -6,8 +6,12 @@ import time
 import re
 import math
 
+from env import make_custom_env
+from utils import decode_individual
 
-def calcFit(path, gamepath):
+def calcFit(path):
+    env = make_custom_env(render=True)
+
     vet = os.listdir(path)
     #print os.path.splitext(vet[0])
     index = 0
@@ -19,42 +23,28 @@ def calcFit(path, gamepath):
         inp = path + "/" + vet[i]
         out = open(path + "/" + os.path.splitext(vet[i])[0] + ".fit", 'w')
 
-        lionpath = gamepath
-        shutil.copyfile(inp, os.path.join(lionpath, '0.txt'))
-        #print "copy to input"
-        #time.sleep(5)
-        lock = os.path.join(lionpath, 'inputlock.txt')
-        unlock = os.path.join(lionpath, 'outputlock.txt')
 
-        open(lock, 'a').close()
-        done=0
-        while(done==0):
-            try:
-                if(os.path.exists(unlock)):
-                   os.remove(unlock)
-                done=1
-            except:
-                done=0
-            #print "Delete unlock"
-        #open(lock, 'a').close()
+        finp = open(inp)
+        ind = finp.read()
+        moves = decode_individual(ind)
+
+        obs = env.reset()
+        done = False
+        output = ''
+        for move in moves:
+            obs, reward, terminated, truncated, info = env.step(move)
+            if reward:
+                output += '1'
+            else:
+                output += '0'
 
 
-        
-        #print "Create lockfile"
-        #Wait for outputlock.txt file
-        while(not os.path.exists(unlock)):
-            time.sleep(0.05)
-        #print "Recieved unlock"
-
-        #time.sleep(0.5)
-
-        fgpath = os.path.join(lionpath, 'fg_output.txt')
-        fg = open(fgpath)
+        fg = output # frames in combo e.g. 000111111111111111111100000111110000000
         #print "Opened fg_output"
 
 
 
-        h2 = [m.group(0) for m in re.finditer(r"(\d)\1*", fg.read())]
+        h2 = [m.group(0) for m in re.finditer(r"(\d)\1*", fg)]
 
         bigger=0
         for i in range(0,len(h2)):
@@ -70,13 +60,9 @@ def calcFit(path, gamepath):
             elif(i>bigger and h2[i][0]=='1'):
                 ffit+= len(h2[i]) / math.pow(1+len(h2[i-1]),2)
 
-        fg.close()
         out.write(str(int(ffit*10000)))
         out.close()
         #shutil.copyfile(fgpath, os.path.join(path, str(index) + '.out'))
-
-        os.remove(os.path.join(lionpath, '0.txt'))
-        #print "Delete 0.txt"
 
         #os.remove(fgpath)
         index = index + 1

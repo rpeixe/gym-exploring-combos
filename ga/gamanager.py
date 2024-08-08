@@ -55,7 +55,7 @@ def gaManager(experimentPath, seed, numGen, popSize, indSize, numElit, numRegen,
                 continue
             
             #Evaluate Population
-            cf.calcFit(path+str(i), 'Game')
+            cf.calcFit(path+str(i))
             fitbygen.append(open(os.path.join(path+str(i),'0.fit'),'r').read())
             #Carryover to next generation the best individuals    
             best = elit.nextGen(path, i, numElit)
