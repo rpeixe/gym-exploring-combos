@@ -60,7 +60,7 @@ def main(trial, args):
     )
 
     # Callbacks for TensorBoard visualisation
-    time_steps = args.timesteps/args.saves
+    time_steps = args.timesteps/(args.saves * args.n_envs)
     callbackList = []
 
     if args.n_optmization_trials <= 0:
@@ -68,14 +68,14 @@ def main(trial, args):
             save_freq=max(int(time_steps), 1),
             save_path=path_models,
             name_prefix="a2c_sfa3",
-            verbose=2
+            verbose=args.verbose
             )
         callbackList.append(checkpoint_callback)
         
     eval_callback = EvalCallback(
         eval_vec_env,
         n_eval_episodes=1,
-        eval_freq=10000,
+        eval_freq=10000 / args.n_envs,
         log_path=path_results,
         best_model_save_path=path_models,
         deterministic=True,
@@ -103,8 +103,8 @@ if __name__ == "__main__":
     parser.add_argument("-r", "--render", action='store_true', help="Choose to render the environment")
     parser.add_argument("-no_am", "--no_action_memory", action='store_false', help="Choose to not feed the last actions as input")
     parser.add_argument("--n_envs", type=int, default=1, help="Number of environments")
-    parser.add_argument("-v", "--verbose", type=int, default=1, help="Verbose mode (0: no output, 1: info)")
-    parser.add_argument("-t", "--timesteps", type=int, default=10000, help="Total timesteps of training")
+    parser.add_argument("-v", "--verbose", type=int, default=2, help="Verbose mode (0: no output, 1: info, 2: debug)")
+    parser.add_argument("-t", "--timesteps", type=int, default=100000, help="Total timesteps of training")
     parser.add_argument("--saves", type=int, default=5, help="Quantity of models will save")
     parser.add_argument("--seed", type=int, default=0, help="Define the random seed the model will use")
     parser.add_argument("-o", "--n_optmization_trials", type=int, default=0, help="Trials of hyperparameter optimization (0: preselect parms, 0>: optimize params)")
