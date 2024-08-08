@@ -4,15 +4,15 @@ import os
 
 
 moves  = [
-        '1l', '1m', '1h', '1-',
-        '2l', '2m', '2h', '2-',
-        '3l', '3m', '3h', '3-',
-        '4l', '4m', '4h', '4-',
-        '5l', '5m', '5h', '5-',
-        '6l', '6m', '6h', '6-',
-        '7l', '7m', '7h', '7-',
-        '8l', '8m', '8h', '8-',
-        '9l', '9m', '9h', '9-'
+        '1lp', '1mp', '1hp', '1lk', '1mk', '1hk', '1-',
+        '2lp', '2mp', '2hp', '2lk', '2mk', '2hk', '2-',
+        '3lp', '3mp', '3hp', '3lk', '3mk', '3hk', '3-',
+        '4lp', '4mp', '4hp', '4lk', '4mk', '4hk', '4-',
+        '5lp', '5mp', '5hp', '5lk', '5mk', '5hk', '5-',
+        '6lp', '6mp', '6hp', '6lk', '6mk', '6hk', '6-',
+        '7lp', '7mp', '7hp', '7lk', '7mk', '7hk', '7-',
+        '8lp', '8mp', '8hp', '8lk', '8mk', '8hk', '8-',
+        '9lp', '9mp', '9hp', '9lk', '9mk', '9hk', '9-',
         ]
 
 def regnextGen(basepath, gennum, startindex,regval, indsize):
