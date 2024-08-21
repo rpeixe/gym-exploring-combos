@@ -1,9 +1,9 @@
 import argparse
 import os
 import optuna
-from stable_baselines3 import A2C
+from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import CallbackList, CheckpointCallback, EvalCallback
-from stable_baselines3.common.sb2_compat.rmsprop_tf_like import RMSpropTFLike
+from schedules import linear_schedule
 from env import make_custom_vec_env
 from callbacks import TensorboardCallbackTrain
 
@@ -13,11 +13,6 @@ def main(trial, args):
     # Create a vectorized environment
     vec_env = make_custom_vec_env(n_envs=args.n_envs, render=args.render, action_memory=args.no_action_memory)
     eval_vec_env = make_custom_vec_env(n_envs=1, render=args.render, action_memory=args.no_action_memory)
-
-    policy_kwargs = {
-        "optimizer_class": RMSpropTFLike,
-        "optimizer_kwargs": {"eps": 1e-5}
-    }
 
     # Hyperparameters to optimize or preselected, don't save when optimizing
     if args.n_optimization_trials > 0:
@@ -29,10 +24,13 @@ def main(trial, args):
         path_results = None
         log_dir = None
     else:
-        learning_rate = 0.0007
+        learning_rate = linear_schedule(0.00025)
+        clip_range = linear_schedule(0.1)
         n_steps = 200
+        batch_size = 200
+        n_epochs = 4
         gamma = 0.99
-        ent_coef = 0.001
+        ent_coef = 0.01
         vf_coef = 0.5
 
         path_models=os.path.join(SCRIPT_DIR, "trained_models")
@@ -45,15 +43,17 @@ def main(trial, args):
                 os.makedirs(log_dir)
                 break
 
-    model = A2C(
+    model = PPO(
         'MultiInputPolicy',
         vec_env,
         learning_rate=learning_rate,
         n_steps=n_steps,
+        batch_size=batch_size,
+        n_epochs=n_epochs,
         gamma=gamma,
+        clip_range=clip_range,
         ent_coef=ent_coef,
         vf_coef=vf_coef,
-        policy_kwargs=policy_kwargs,
         seed=args.seed,
         verbose=args.verbose,
         tensorboard_log=log_dir

@@ -3,10 +3,14 @@ import sys
 import math
 
 if __name__=="__main__":
-        exp = sys.argv[1]
-        inp = sys.argv[2]
-        numRep = int(sys.argv[3])
-        numGen = int(sys.argv[4])
+        # exp = sys.argv[1]
+        # inp = sys.argv[2]
+        # numRep = int(sys.argv[3])
+        # numGen = int(sys.argv[4])
+        exp = ".teste"
+        inp = "_bestfitness.txt"
+        numRep = 10
+        numGen = 300
         print ("Evaluating " + inp + " of " + exp)
 
         matrix = [[0 for x in range(numRep)] for x in range(numGen)] 
@@ -16,7 +20,7 @@ if __name__=="__main__":
         for r in range(0,numRep):
                 #ofile = open("results/"+exp+"_rep"+str(r+1)+inp,'w')
                 for g in range(0, numGen):
-                        ifile = open(exp+"/rep"+str(r+1)+"/"+exp+"_gen"+str(g)+"/"+inp)
+                        ifile = open(exp+"/rep"+str(r+1)+"/"+"_gen"+str(g)+"/"+inp)
                         temp = ifile.read()
                         matrix[g][r]=float(temp)
                         med[g]=med[g]+float(temp)

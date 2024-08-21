@@ -10,7 +10,7 @@ from env import make_custom_env
 from utils import decode_individual
 
 def calcFit(path):
-    env = make_custom_env(render=True)
+    env = make_custom_env(render=False)
 
     vet = os.listdir(path)
     #print os.path.splitext(vet[0])
