@@ -26,8 +26,11 @@ def nextGen(basepath, gennum, elitval):
 	path = basepath + str(gennum)
 	files = os.listdir(path)
 	total = 0.0
+	best = 0.0
 	vetfiles = []
 	vetfitns = []
+	bestfiles = []	
+	bestcombos = []
 	for i in range (0, len(files)):
 		if(os.path.splitext(files[i])[1]==".fit"):
 			vetfiles.append(os.path.splitext(files[i])[0])
@@ -35,8 +38,15 @@ def nextGen(basepath, gennum, elitval):
 			vetfitns.append(float(inp.read()))
 			total = total + vetfitns[len(vetfitns)-1]
 			inp.close()
+		elif(os.path.splitext(files[i])[1]==".best"):
+			bestfiles.append(os.path.splitext(files[i])[0])
+			inp = open(basepath + str(gennum) + "/" + files[i])
+			bestcombos.append(float(inp.read()))
+			best = best + bestcombos[len(bestcombos)-1]
+			inp.close()
 			
 	bubble_sort(vetfiles, vetfitns)
+	bubble_sort(bestfiles, bestcombos)
 	if(os.path.exists(basepath + str(gennum+1))):
 		shutil.rmtree(basepath + str(gennum+1), ignore_errors=True)
     #time.sleep(1)
@@ -44,12 +54,21 @@ def nextGen(basepath, gennum, elitval):
 	for j in range(0,elitval):
 		shutil.copyfile(basepath + str(gennum) + "/" + vetfiles[j]+".ind", basepath + str(gennum+1) + "/" + str(j)+".ind")
 		shutil.copyfile(basepath + str(gennum) + "/" + vetfiles[j]+".fit", basepath + str(gennum+1) + "/" + str(j)+".fit")
+		shutil.copyfile(basepath + str(gennum) + "/" + vetfiles[j]+".best", basepath + str(gennum+1) + "/" + str(j)+".best")
 		#shutil.copyfile(basepath + str(gennum) + "/" + vetfiles[j]+".out", basepath + str(gennum+1) + "/" + str(j)+".out")
 	shutil.copyfile(basepath + str(gennum) + "/" + vetfiles[0]+".fit", basepath + str(gennum) + "/_bestfitness.txt")
 	shutil.copyfile(basepath + str(gennum) + "/" + vetfiles[len(vetfiles)-1]+".fit", basepath + str(gennum) + "/_lastfitness.txt")
+	shutil.copyfile(basepath + str(gennum) + "/" + bestfiles[0]+".best", basepath + str(gennum) + "/_bestcombo.txt")
 	total = total / len(vetfiles)
 	out = open(basepath + str(gennum) + "/_medfitness.txt",'w')
 	out.write(str(total))
+	out.close()
+	best = best / len(bestfiles)
+	out = open(basepath + str(gennum) + "/_medbestcombo.txt",'w')
+	out.write(str(best))
+	out.close()
+	out = open(basepath + str(gennum) + "/_bestcomboind.txt",'w')
+	out.write(str(bestfiles[0]))
 	out.close()
 	return vetfiles[0]
     

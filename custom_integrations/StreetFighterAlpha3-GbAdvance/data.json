@@ -8,6 +8,10 @@
       "address": 33571880,
       "type": "<u2"
     },
+    "fallen": {
+      "address": 33572038,
+      "type": ">d8"
+    },
     "player health": {
       "address": 33556504,
       "type": "<u2"

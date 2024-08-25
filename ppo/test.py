@@ -59,6 +59,8 @@ def main(args):
     print(f"std_reward: {std_reward:.2f}")
     print(f"\nBest reward: {best_reward}")
     #print(f"Best action: {best_action}\n")
+    with open('best_combo.txt', 'w') as file:
+        file.write(str(best_action))
     
     # Log final metrics to TensorBoard
     callback.log_final_metrics(avg_reward, std_reward, best_reward)

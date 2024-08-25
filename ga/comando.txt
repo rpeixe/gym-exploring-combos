@@ -1,1 +1,1 @@
-python gamanager.py .\teste 0 300 200 300 100 20 4 0.5 0.85 10 10
+python gamanager.py .\teste 0 1000 100 600 100 20 4 0.5 0.85 10 1
