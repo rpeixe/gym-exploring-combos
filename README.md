@@ -17,6 +17,8 @@ As well, we adapt the code from another work in literature using GA, in this [ar
 
 To run the code you will need use **Linux** and libraries in **"requirements.txt"**
 
+Stable Baselines3 requires Python 3.8+.
+
 ### Executing program
 
 1. Place the game's ROM inside `custom_integrations/StreetFighterAlpha3-GbAdvance` and name it `rom.gba`.
