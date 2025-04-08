@@ -1,6 +1,6 @@
 # Exploring combos in Street Fighter Alpha 3 with reinforcement learning
 
-This is a project using AI to explore and identify the bests combos in Street Fighter Alpha 3, using Stable Retro, a reinforcement learning (RL) library.
+This is a project about using AI to explore and identify the best combos in Street Fighter Alpha 3 using Stable Retro, a reinforcement learning (RL) library.
 
 ## Description
 The goal of this project is to find the most effective AI model for achieving the given objectives. The AI is rewarded for making the right decisions. Our primary aim in the article is for AI to identify the best combo based on time, but it can also be tested in different scenarios. For example, you can evaluate the AI's performance based on damage, damage + time, number of hits, or number of hits + time. Feel free to explore these scenarios and experiment with adjusting the parameters to improve results.
